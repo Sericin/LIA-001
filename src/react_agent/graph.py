@@ -62,10 +62,6 @@ async def call_model(state: State) -> Dict[str, List[AIMessage]]:
     # Return the model's response as a list to be added to existing messages
     return {"messages": [response]}
 
-# Return the model's response as a list to be added to existing messages
-    return {"messages": [response]}
-
-
 # Add this new research agent function
 async def research_agent(state: State) -> Dict[str, List[AIMessage]]:
     """Research agent that specializes in gathering information."""
@@ -91,6 +87,7 @@ builder = StateGraph(State, input=InputState, config_schema=Configuration)
 
 # Define the two nodes we will cycle between
 builder.add_node(call_model)
+builder.add_node("research_agent", research_agent)
 builder.add_node("tools", ToolNode(TOOLS))
 
 # Set the entrypoint as `call_model`
@@ -98,27 +95,35 @@ builder.add_node("tools", ToolNode(TOOLS))
 builder.add_edge("__start__", "call_model")
 
 
-def route_model_output(state: State) -> Literal["__end__", "tools"]:
+def route_model_output(state: State) -> Literal["__end__", "tools", "research_agent"]:
     """Determine the next node based on the model's output.
 
-    This function checks if the model's last message contains tool calls.
+    This function checks if the model's last message contains tool calls
+    or if research is needed.
 
     Args:
         state (State): The current state of the conversation.
 
     Returns:
-        str: The name of the next node to call ("__end__" or "tools").
+        str: The name of the next node to call.
     """
     last_message = state.messages[-1]
     if not isinstance(last_message, AIMessage):
         raise ValueError(
             f"Expected AIMessage in output edges, but got {type(last_message).__name__}"
         )
-    # If there is no tool call, then we finish
-    if not last_message.tool_calls:
-        return "__end__"
-    # Otherwise we execute the requested actions
-    return "tools"
+    
+    # Check if the response mentions needing research
+    content = last_message.content.lower() if isinstance(last_message.content, str) else ""
+    if "research" in content or "information" in content or "details" in content:
+        return "research_agent"
+    
+    # If there are tool calls, go to tools
+    if last_message.tool_calls:
+        return "tools"
+    
+    # Otherwise we're done
+    return "__end__"
 
 
 # Add a conditional edge to determine the next step after `call_model`
@@ -132,6 +137,7 @@ builder.add_conditional_edges(
 # Add a normal edge from `tools` to `call_model`
 # This creates a cycle: after using tools, we always return to the model
 builder.add_edge("tools", "call_model")
+builder.add_edge("research_agent", "call_model")
 
 # Compile the builder into an executable graph
 graph = builder.compile(name="ReAct Agent")
