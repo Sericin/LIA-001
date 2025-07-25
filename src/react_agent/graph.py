@@ -62,6 +62,28 @@ async def call_model(state: State) -> Dict[str, List[AIMessage]]:
     # Return the model's response as a list to be added to existing messages
     return {"messages": [response]}
 
+# Return the model's response as a list to be added to existing messages
+    return {"messages": [response]}
+
+
+# Add this new research agent function
+async def research_agent(state: State) -> Dict[str, List[AIMessage]]:
+    """Research agent that specializes in gathering information."""
+    configuration = Configuration.from_context()
+    
+    model = load_chat_model(configuration.model)
+    
+    research_prompt = "You are a research specialist. Provide detailed, well-sourced information about the user's question."
+    
+    response = cast(
+        AIMessage,
+        await model.ainvoke([
+            {"role": "system", "content": research_prompt}, 
+            *state.messages
+        ])
+    )
+    
+    return {"messages": [response]}
 
 # Define a new graph
 
