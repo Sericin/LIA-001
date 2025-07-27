@@ -81,6 +81,33 @@ async def research_agent(state: State) -> Dict[str, List[AIMessage]]:
     
     return {"messages": [response]}
 
+## Add this new kb and lease document processing agent function
+async def kb_lease_doc_agent(state: State) -> Dict[str, List[AIMessage]]:
+    """KB and lease document processing agent using LangSmith prompt."""
+    from langsmith import Client
+    
+    configuration = Configuration.from_context()
+    model = load_chat_model(configuration.model)
+    client = Client()
+    
+    # Pull the complete prompt template
+    prompt_template = client.pull_prompt("v22-prompt1-establish-baseline-terms")
+    
+    # The prompt is likely complete - just invoke without parameters
+    # or with minimal context if needed
+    formatted_prompt = prompt_template.invoke({})
+    
+    # Add the user's message to the existing system messages
+    all_messages = formatted_prompt.messages + [state.messages[-1]]
+    
+    # Use all messages with model
+    response = cast(
+        AIMessage,
+        await model.ainvoke(all_messages)
+    )
+    
+    return {"messages": [response]}
+
 # Define a new graph
 
 builder = StateGraph(State, input=InputState, config_schema=Configuration)
@@ -88,18 +115,18 @@ builder = StateGraph(State, input=InputState, config_schema=Configuration)
 # Define the two nodes we will cycle between
 builder.add_node(call_model)
 builder.add_node("research_agent", research_agent)
+builder.add_node("kb_lease_doc_agent", kb_lease_doc_agent)
 builder.add_node("tools", ToolNode(TOOLS))
 
 # Set the entrypoint as `call_model`
 # This means that this node is the first one called
 builder.add_edge("__start__", "call_model")
 
-
-def route_model_output(state: State) -> Literal["__end__", "tools", "research_agent"]:
+def route_model_output(state: State) -> Literal["__end__", "tools", "research_agent", "kb_lease_doc_agent"]:
     """Determine the next node based on the model's output.
 
     This function checks if the model's last message contains tool calls
-    or if research is needed.
+    or if specialized processing is needed.
 
     Args:
         state (State): The current state of the conversation.
@@ -113,8 +140,13 @@ def route_model_output(state: State) -> Literal["__end__", "tools", "research_ag
             f"Expected AIMessage in output edges, but got {type(last_message).__name__}"
         )
     
-    # Check if the response mentions needing research
     content = last_message.content.lower() if isinstance(last_message.content, str) else ""
+    
+    # Check for lease document processing
+    if any(term in content for term in ["lease", "rental", "valuation", "commercial real estate"]):
+        return "kb_lease_doc_agent"
+    
+    # Check if the response mentions needing research
     if "research" in content or "information" in content or "details" in content:
         return "research_agent"
     
@@ -138,6 +170,7 @@ builder.add_conditional_edges(
 # This creates a cycle: after using tools, we always return to the model
 builder.add_edge("tools", "call_model")
 builder.add_edge("research_agent", "call_model")
+builder.add_edge("kb_lease_doc_agent", "call_model")
 
 # Compile the builder into an executable graph
 graph = builder.compile(name="ReAct Agent")
