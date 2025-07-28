@@ -7,4 +7,4 @@ prompt = ChatPromptTemplate.from_messages([
     ("user", "{query}")
 ])
 
-client.push_prompt("kb_lease_doc_agent", object=prompt)
+client.push_prompt("v22-prompt1-establish-baseline-terms", object=prompt)

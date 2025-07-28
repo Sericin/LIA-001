@@ -1,0 +1,475 @@
+{
+  "prompt3Results": {
+    /* METADATA SECTION
+     * Purpose: Workflow tracking and quality control
+     * Required: Always
+     * Usage: Validates analysis progression and quality thresholds
+     */
+    "metadata": {
+      /* workflow_step: Current position in analysis pipeline
+       * Type: string (enum)
+       * Values: "STEP_3_VALUATION_HYPOTHESIS"
+       * Example: "STEP_3_VALUATION_HYPOTHESIS"
+       */
+      "workflow_step": "STEP_3_VALUATION_HYPOTHESIS",
+      
+      /* status: Current processing state
+       * Type: string (enum)
+       * Values: ["IN_PROGRESS", "COMPLETED", "PENDING", "FAILED"]
+       * Example: "COMPLETED"
+       * Usage: "COMPLETED" enables next step, "FAILED" triggers review
+       */
+      "status": "COMPLETED",
+      
+      /* confidence_level: Statistical confidence percentage
+       * Type: number
+       * Range: 0-100
+       * Example: 87.5
+       * Usage: <70 requires manual review, >90 allows auto-progression
+       */
+      "confidence_level": 87.5,
+      
+      /* documents_analyzed: List of source documents processed
+       * Type: array of strings
+       * Min items: 1
+       * Max items: 50
+       * String min length: 5
+       * String max length: 255
+       * Example: ["Lease_Agreement_2020.pdf", "First_Amendment_2023.pdf"]
+       */
+      "documents_analyzed": [
+        "Lease_Agreement_2020.pdf",
+        "First_Amendment_2023.pdf",
+        "Rent_Review_Provisions.pdf"
+      ],
+      
+      /* analysis_date: Timestamp of analysis completion
+       * Type: string (ISO 8601 datetime)
+       * Format: "YYYY-MM-DDTHH:mm:ssZ"
+       * Example: "2024-01-15T14:30:00Z"
+       */
+      "analysis_date": "2024-01-15T14:30:00Z"
+    },
+    
+    /* REFERENCE_FRAME SECTION
+     * Purpose: Establishes baseline context for hypothetical lease construction
+     * Required: Always
+     * Usage: Determines which lease version and date apply to valuation
+     */
+    "reference_frame": {
+      /* reference_date: Primary valuation date
+       * Type: string (ISO date)
+       * Format: "YYYY-MM-DD"
+       * Example: "2025-06-01"
+       * Usage: Anchors all temporal lease interpretations
+       */
+      "reference_date": "2025-06-01",
+      
+      /* process_type: Valuation context
+       * Type: string (enum)
+       * Values: ["RENT_REVIEW", "RENT_DETERMINATION", "RENT_NEGOTIATION"]
+       * Example: "RENT_REVIEW"
+       * Usage: Determines applicable legal framework and assumptions
+       */
+      "process_type": "RENT_REVIEW",
+      
+      /* applicable_lease_definition: Which lease version applies
+       * Type: string (enum)
+       * Values: ["ORIGINAL", "RENEWAL", "SPECIFIC_VERSION"]
+       * Example: "ORIGINAL"
+       * Usage: Critical for identifying correct terms to apply
+       */
+      "applicable_lease_definition": "ORIGINAL",
+      
+      /* lease_version_details: Specific lease version description
+       * Type: string
+       * Min length: 10
+       * Max length: 500
+       * Example: "Original Lease dated 2020-01-01 without amendments"
+       */
+      "lease_version_details": "Original Lease dated 2020-01-01 as amended by First Amendment dated 2023-03-15",
+      
+      /* market_context: Market conditions at valuation date
+       * Type: string
+       * Min length: 20
+       * Max length: 1000
+       * Example: "Post-pandemic recovery phase with 15% vacancy rates"
+       */
+      "market_context": "Tight market conditions with sub-3% vacancy, rising rents at 5-7% annually",
+      
+      /* cross_references: Supporting clause citations
+       * Type: array of objects
+       * Min items: 1
+       * Max items: 20
+       */
+      "cross_references": [
+        {
+          /* clause: Specific clause reference
+           * Type: string
+           * Pattern: "^[0-9]+\\.?[0-9]*"
+           * Min length: 1
+           * Max length: 20
+           * Example: "14.2"
+           */
+          "clause": "14.2",
+          
+          /* exact_quote: Verbatim lease language
+           * Type: string
+           * Min length: 10
+           * Max length: 2000
+           * Example: "The rent shall be reviewed on each Review Date..."
+           */
+          "exact_quote": "The rent shall be reviewed on each Review Date to the open market rental value"
+        }
+      ]
+    },
+    
+    /* HYPOTHETICAL_LEASE_TERMS SECTION
+     * Purpose: Defines theoretical lease terms for valuation
+     * Required: Always
+     * Usage: Constructs the hypothetical lease to be valued
+     * Min items: 5 (must have basic terms)
+     * Max items: 100
+     */
+    "hypothetical_lease_terms": [
+      {
+        /* term_category: Classification of lease provision
+         * Type: string (enum)
+         * Values: ["LEASE_TERM", "USE_RESTRICTIONS", "TENANT_OBLIGATIONS", 
+         *          "LANDLORD_RIGHTS", "FINANCIAL_TERMS", "OPERATIONAL_TERMS"]
+         * Example: "USE_RESTRICTIONS"
+         */
+        "term_category": "USE_RESTRICTIONS",
+        
+        /* provision_name: Descriptive name
+         * Type: string
+         * Min length: 5
+         * Max length: 100
+         * Example: "Permitted Use"
+         */
+        "provision_name": "Permitted Use",
+        
+        /* hypothetical_provision: Full hypothetical term text
+         * Type: string
+         * Min length: 20
+         * Max length: 5000
+         * Example: "Retail sale of comparison goods only..."
+         */
+        "hypothetical_provision": "Retail sale of comparison goods only, excluding food, beverage, and entertainment uses",
+        
+        /* source_reasoning: Why this term is included
+         * Type: string
+         * Min length: 20
+         * Max length: 2000
+         * Example: "Derived from Clause 3.1 of Original Lease..."
+         */
+        "source_reasoning": "Derived from Clause 3.1 of Original Lease without modifications per rent review assumptions",
+        
+        /* cross_references: Supporting citations
+         * Type: array of objects
+         * Min items: 1
+         * Max items: 10
+         */
+        "cross_references": [
+          {
+            "clause": "3.1",
+            "exact_quote": "The Premises shall be used solely for retail purposes"
+          }
+        ]
+      }
+    ],
+    
+    /* ASSUMPTIONS_AND_DISREGARDS SECTION
+     * Purpose: Documents valuation methodology adjustments
+     * Required: Always
+     * Usage: Critical for legal defensibility of valuation
+     */
+    "assumptions_and_disregards": {
+      /* explicit_assumptions: Terms assumed different from actual
+       * Type: array of objects
+       * Min items: 0
+       * Max items: 50
+       */
+      "explicit_assumptions": [
+        {
+          /* assumption: What is being assumed
+           * Type: string
+           * Min length: 10
+           * Max length: 1000
+           * Example: "Assume premises in good repair"
+           */
+          "assumption": "Assume premises delivered in good and substantial repair",
+          
+          /* legal_reasoning: Justification for assumption
+           * Type: string
+           * Min length: 20
+           * Max length: 2000
+           */
+          "legal_reasoning": "Standard market assumption per RICS Red Book guidance for hypothetical lease valuations",
+          
+          "cross_references": [
+            {
+              "clause": "7.1",
+              "exact_quote": "Tenant shall maintain premises in good repair"
+            }
+          ]
+        }
+      ],
+      
+      /* disregards: Actual terms ignored in valuation
+       * Type: array of objects
+       * Min items: 0
+       * Max items: 50
+       */
+      "disregards": [
+        {
+          /* disregarded_term: What is being ignored
+           * Type: string
+           * Min length: 10
+           * Max length: 500
+           */
+          "disregarded_term": "Existing tenant improvements valued at $2M",
+          
+          "legal_reasoning": "Clause 14.2(b) requires disregard of tenant's improvements",
+          
+          "cross_references": [
+            {
+              "clause": "14.2(b)",
+              "exact_quote": "disregarding any improvements made by the Tenant"
+            }
+          ]
+        }
+      ],
+      
+      /* alternative_facts: Hypothetical circumstances assumed
+       * Type: array of objects
+       * Min items: 0
+       * Max items: 30
+       */
+      "alternative_facts": [
+        {
+          "fact_assumed": "Willing landlord and willing tenant negotiating at arm's length",
+          "legal_reasoning": "Standard hypothetical lease assumption for market rent determination",
+          "cross_references": []
+        }
+      ],
+      
+      /* implicit_terms: Terms implied by absence of explicit assumptions
+       * Type: array of objects
+       * Min items: 0
+       * Max items: 50
+       */
+      "implicit_terms": [
+        {
+          /* implied_term: What is implicitly included
+           * Type: string
+           * Min length: 10
+           * Max length: 1000
+           */
+          "implied_term": "No rent-free periods or landlord inducements",
+          
+          /* implication_reasoning: Why this matters
+           * Type: string
+           * Min length: 20
+           * Max length: 2000
+           */
+          "implication_reasoning": "Absence of explicit assumption means market rent reflects no inducements",
+          
+          /* market_impact: Effect on valuation
+           * Type: string (enum)
+           * Values: ["TENANT_FAVORABLE", "LANDLORD_FAVORABLE", "NEUTRAL"]
+           * Example: "LANDLORD_FAVORABLE"
+           */
+          "market_impact": "LANDLORD_FAVORABLE"
+        }
+      ]
+    },
+    
+    /* MARKET_APPEAL_ASSESSMENT SECTION
+     * Purpose: Evaluates commercial viability of hypothetical lease
+     * Required: Always
+     * Usage: Reality check on valuation assumptions
+     */
+    "market_appeal_assessment": {
+      /* overall_marketability: Summary assessment
+       * Type: string (enum)
+       * Values: ["HIGHLY_MARKETABLE", "MARKETABLE", "CHALLENGING", 
+       *          "DIFFICULT", "UNLETTABLE"]
+       * Example: "CHALLENGING"
+       */
+      "overall_marketability": "CHALLENGING",
+      
+      /* marketability_factors: Specific factors affecting appeal
+       * Type: array of objects
+       * Min items: 1
+       * Max items: 20
+       */
+      "marketability_factors": [
+        {
+          /* factor: Description of factor
+           * Type: string
+           * Min length: 10
+           * Max length: 200
+           */
+          "factor": "Restrictive use clause limiting to comparison goods retail",
+          
+          /* impact: Positive or negative effect
+           * Type: string (enum)
+           * Values: ["POSITIVE", "NEGATIVE", "NEUTRAL"]
+           */
+          "impact": "NEGATIVE",
+          
+          /* severity: How significant the impact is
+           * Type: string (enum)
+           * Values: ["CRITICAL", "SIGNIFICANT", "MODERATE", "MINOR"]
+           */
+          "severity": "SIGNIFICANT"
+        }
+      ],
+      
+      /* tenant_works_analysis: Financial viability calculation
+       * Purpose: Tests if hypothetical tenant can afford the space
+       * Required: Always
+       */
+      "tenant_works_analysis": {
+        /* Cost fields
+         * Type: number (optional for individual items)
+         * Min: 0
+         * Max: 100000000
+         * Example: 500000
+         */
+        "fit_out_cost": 500000,
+        "mep_systems_cost": 200000,
+        "other_works_cost": 100000,
+        
+        /* total_cost: Sum of all works
+         * Type: number (required)
+         * Min: 0
+         * Max: 100000000
+         */
+        "total_cost": 800000,
+        
+        /* available_term_years: Lease term for amortization
+         * Type: number (required)
+         * Min: 0.5
+         * Max: 99
+         */
+        "available_term_years": 4.5,
+        
+        /* annual_amortization: Cost per year
+         * Type: number (required)
+         * Min: 0
+         * Max: 10000000
+         */
+        "annual_amortization": 177777,
+        
+        /* viability: Can tenant afford it?
+         * Type: boolean (required)
+         */
+        "viability": false,
+        
+        /* viability_reasoning: Explanation
+         * Type: string (required)
+         * Min length: 20
+         * Max length: 1000
+         */
+        "viability_reasoning": "Annual amortization of $177k on 4.5 year effective term makes premises uneconomic for most retailers"
+      },
+      
+      /* critical_issues: Deal-breaking problems
+       * Type: array of objects
+       * Min items: 0
+       * Max items: 20
+       */
+      "critical_issues": [
+        {
+          /* issue_type: Category of problem
+           * Type: string (enum)
+           * Values: ["VACANT_POSSESSION", "ABSOLUTE_DISCRETION", 
+           *          "REINSTATEMENT", "CONSULTANT_FEES", "OPERATIONAL_CONSTRAINT"]
+           */
+          "issue_type": "REINSTATEMENT",
+          
+          /* description: Detailed explanation
+           * Type: string
+           * Min length: 20
+           * Max length: 1000
+           */
+          "description": "Full reinstatement to base building required including removal of mezzanine floor",
+          
+          /* valuation_impact: Effect on rent
+           * Type: string
+           * Min length: 10
+           * Max length: 500
+           */
+          "valuation_impact": "Reduces rental value by estimated 15-20% due to exit cost liability"
+        }
+      ]
+    },
+    
+    /* COMPLETION_SUMMARY SECTION
+     * Purpose: Executive summary and progression readiness
+     * Required: Always
+     */
+    "completion_summary": {
+      /* reference_valuation_date: Primary date analyzed
+       * Type: string (ISO date)
+       * Format: "YYYY-MM-DD"
+       */
+      "reference_valuation_date": "2025-06-01",
+      
+      /* applicable_lease_source: Which document version used
+       * Type: string
+       * Min length: 10
+       * Max length: 200
+       */
+      "applicable_lease_source": "Original Lease dated 2020-01-01",
+      
+      /* metrics: Quantitative summary
+       * Type: object (required)
+       */
+      "metrics": {
+        /* All counts are numbers, min: 0, max: 1000 */
+        "hypothetical_terms_count": 47,
+        "explicit_assumptions_count": 12,
+        "disregards_count": 8,
+        "alternative_facts_count": 5,
+        "critical_ambiguities_count": 3
+      },
+      
+      /* legal_reasoning_confidence: Overall interpretation confidence
+       * Type: string (enum)
+       * Values: ["HIGH", "MEDIUM", "LOW"]
+       */
+      "legal_reasoning_confidence": "MEDIUM",
+      
+      /* critical_ambiguities: Unresolved interpretation issues
+       * Type: array of objects
+       * Min items: 0
+       * Max items: 20
+       */
+      "critical_ambiguities": [
+        {
+          /* ambiguity: Description of unclear term
+           * Type: string
+           * Min length: 10
+           * Max length: 500
+           */
+          "ambiguity": "Definition of 'market rent' excludes certain comparables but criteria unclear",
+          
+          /* interpretation_risk: Severity of ambiguity
+           * Type: string (enum)
+           * Values: ["HIGH", "MEDIUM", "LOW"]
+           */
+          "interpretation_risk": "HIGH"
+        }
+      ],
+      
+      /* ready_for_next_step: Can proceed to valuation?
+       * Type: boolean (required)
+       * Usage: true allows progression, false requires remediation
+       */
+      "ready_for_next_step": true
+    }
+  }
+}

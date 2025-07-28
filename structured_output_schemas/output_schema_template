@@ -1,0 +1,274 @@
+{
+  "promptXResults": {
+    /* STANDARD METADATA SECTION
+     * Purpose: Required for all prompt results - tracks workflow state
+     * Usage: Copy this section to all promptResults schemas
+     */
+    "metadata": {
+      /* STRING TYPE - ENUM VARIANT
+       * When to use: For fields with fixed set of allowed values
+       * Definition: "type": "string", "enum": ["VALUE1", "VALUE2", ...]
+       * Example values: Status codes, categories, classifications
+       */
+      "workflow_step": "STEP_X_NAME", // Enum example
+      
+      /* NUMBER TYPE - PERCENTAGE VARIANT
+       * When to use: For confidence scores, percentages, probabilities
+       * Definition: "type": "number", "minimum": 0, "maximum": 100
+       * Decimal precision: Usually 1-2 decimal places
+       * Example: 87.5 means 87.5% confidence
+       */
+      "confidence_level": 87.5,
+      
+      /* STRING TYPE - DATETIME VARIANT
+       * When to use: For timestamps, dates with time
+       * Definition: "type": "string", "format": "date-time"
+       * Format: ISO 8601 "YYYY-MM-DDTHH:mm:ssZ"
+       * Example: "2024-01-15T14:30:00Z"
+       */
+      "analysis_date": "2024-01-15T14:30:00Z"
+    },
+    
+    /* BASIC DATATYPES REFERENCE */
+    "datatype_examples": {
+      /* STRING TYPE - STANDARD
+       * When to use: Text data, identifiers, descriptions
+       * Constraints: "minLength": X, "maxLength": Y
+       * Definition: "type": "string"
+       */
+      "standard_string": "Any text content here",
+      
+      /* STRING TYPE - PATTERN RESTRICTED
+       * When to use: Formatted strings (clause refs, IDs, codes)
+       * Definition: "type": "string", "pattern": "^[regex]$"
+       * Example pattern: "^[0-9]+\\.[0-9]+$" for "12.3" format
+       */
+      "clause_reference": "14.2",
+      
+      /* STRING TYPE - DATE ONLY
+       * When to use: Calendar dates without time
+       * Definition: "type": "string", "format": "date"
+       * Format: "YYYY-MM-DD"
+       */
+      "valuation_date": "2025-06-01",
+      
+      /* NUMBER TYPE - INTEGER
+       * When to use: Counts, whole numbers
+       * Definition: "type": "integer", "minimum": X, "maximum": Y
+       * No decimals allowed
+       */
+      "item_count": 42,
+      
+      /* NUMBER TYPE - DECIMAL
+       * When to use: Money, measurements, calculations
+       * Definition: "type": "number"
+       * Constraints: "minimum": X, "maximum": Y, "multipleOf": Z
+       */
+      "monetary_amount": 150000.50,
+      
+      /* BOOLEAN TYPE
+       * When to use: Yes/no, true/false, on/off states
+       * Definition: "type": "boolean"
+       * Only values: true or false (no quotes)
+       */
+      "is_complete": true,
+      
+      /* NULL TYPE
+       * When to use: Explicitly empty/absent values
+       * Definition: "type": ["string", "null"]
+       * Indicates intentional absence vs missing data
+       */
+      "optional_field": null
+    },
+    
+    /* ARRAY TYPES REFERENCE */
+    "array_examples": {
+      /* ARRAY OF STRINGS
+       * When to use: Lists of text items, tags, identifiers
+       * Definition: "type": "array", "items": {"type": "string"}
+       * Constraints: "minItems": X, "maxItems": Y
+       * Item constraints: "minLength": A, "maxLength": B
+       */
+      "document_list": [
+        "Lease_Agreement_2020.pdf",
+        "Amendment_2023.pdf"
+      ],
+      
+      /* ARRAY OF OBJECTS
+       * When to use: Structured repeating data
+       * Definition: "type": "array", "items": {"type": "object", "properties": {...}}
+       * Each object follows same schema
+       */
+      "structured_items": [
+        {
+          "id": "ITEM_001",
+          "value": 100,
+          "description": "First item"
+        },
+        {
+          "id": "ITEM_002", 
+          "value": 200,
+          "description": "Second item"
+        }
+      ],
+      
+      /* ARRAY OF ENUMS
+       * When to use: Multiple selections from fixed options
+       * Definition: "type": "array", "items": {"type": "string", "enum": [...]}
+       * Ensures all items are from allowed set
+       */
+      "selected_categories": ["CATEGORY_A", "CATEGORY_B"]
+    },
+    
+    /* OBJECT TYPES REFERENCE */
+    "object_examples": {
+      /* SIMPLE OBJECT
+       * When to use: Grouping related properties
+       * Definition: "type": "object", "properties": {...}
+       * Can specify required properties: "required": ["prop1", "prop2"]
+       */
+      "simple_grouping": {
+        "name": "Example Name",
+        "value": 123
+      },
+      
+      /* NESTED OBJECT
+       * When to use: Hierarchical data structures
+       * Definition: Objects within objects
+       * Depth: Usually limit to 3-4 levels max
+       */
+      "nested_structure": {
+        "level1": {
+          "level2": {
+            "level3_property": "Nested value"
+          }
+        }
+      },
+      
+      /* OBJECT WITH MIXED TYPES
+       * When to use: Complex entities with various properties
+       * Each property can have different type and constraints
+       */
+      "complex_entity": {
+        "string_prop": "text",           // type: string
+        "number_prop": 42.5,            // type: number
+        "boolean_prop": true,           // type: boolean
+        "array_prop": [1, 2, 3],        // type: array
+        "object_prop": {"key": "val"}   // type: object
+      }
+    },
+    
+    /* CROSS-REFERENCE PATTERN
+     * Standard structure for citations/references
+     * When to use: Legal docs, academic refs, source tracking
+     */
+    "cross_references": [
+      {
+        /* clause: Document section reference
+         * Type: string
+         * Pattern: Depends on doc type (e.g., "^[0-9]+\\.?[0-9]*$")
+         */
+        "clause": "14.2",
+        
+        /* exact_quote: Verbatim source text
+         * Type: string  
+         * Min length: Usually 10+ chars
+         * Max length: Often 2000-5000 chars
+         */
+        "exact_quote": "The exact text from the source document",
+        
+        /* document: Source document identifier (optional)
+         * Type: string
+         * Include when multiple docs involved
+         */
+        "document": "Lease_Agreement_2020.pdf",
+        
+        /* page_number: Page reference (optional)
+         * Type: integer
+         * Min: 1
+         */
+        "page_number": 47
+      }
+    ],
+    
+    /* VALIDATION PATTERN
+     * Standard structure for quality checks
+     * When to use: All workflows needing validation
+     */
+    "quality_validation": {
+      /* validation_items: Checklist of validations
+       * Type: array of objects
+       * Usually 5-20 items
+       */
+      "validation_items": [
+        {
+          "check_name": "All documents reviewed",  // Brief description
+          "status": true,                          // Pass/fail
+          "description": "Verified 3 of 3 documents analyzed" // Detail
+        }
+      ],
+      
+      /* overall_quality_score: Aggregate score
+       * Type: number
+       * Range: 0-100
+       * Calculation: Define scoring method
+       */
+      "overall_quality_score": 92.5
+    },
+    
+    /* METRICS PATTERN  
+     * Standard structure for counts/statistics
+     * When to use: Summary statistics sections
+     */
+    "metrics": {
+      /* Use descriptive names ending in _count, _total, etc.
+       * Type: integer for counts
+       * Type: number for calculations
+       */
+      "items_processed_count": 47,
+      "errors_found_count": 3,
+      "success_rate_percentage": 93.6,
+      "total_value": 1500000.00
+    },
+    
+    /* ENUM REFERENCE
+     * Common enum patterns used across schemas
+     */
+    "enum_references": {
+      /* Status values - workflow states */
+      "status_example": "COMPLETED", // ["IN_PROGRESS", "COMPLETED", "PENDING", "FAILED"]
+      
+      /* Impact levels - severity/importance */
+      "impact_example": "HIGH", // ["CRITICAL", "HIGH", "MEDIUM", "LOW", "MINIMAL"]
+      
+      /* Directions - positive/negative/neutral */
+      "direction_example": "POSITIVE", // ["POSITIVE", "NEGATIVE", "NEUTRAL"]
+      
+      /* Market positions - stakeholder advantage */
+      "position_example": "BALANCED" // ["TENANT_FAVORABLE", "LANDLORD_FAVORABLE", "MARKET_STANDARD", "BALANCED"]
+    },
+    
+    /* OPTIONAL VS REQUIRED PATTERN
+     * How to indicate field requirements
+     */
+    "requirement_examples": {
+      /* Required field: Must be present
+       * In schema: Include in "required": [] array
+       * Never null unless explicitly allowed
+       */
+      "required_field": "Must have value",
+      
+      /* Optional field: May be omitted
+       * In schema: Omit from "required": [] array  
+       * Can be missing from JSON entirely
+       */
+      "optional_field": "May be present",
+      
+      /* Nullable required: Must be present but can be null
+       * In schema: In "required": [] but type includes null
+       * Definition: "type": ["string", "null"]
+       */
+      "nullable_required": null
+    }
+  }
+}

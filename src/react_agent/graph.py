@@ -6,9 +6,11 @@ Works with a chat model with tool calling support.
 from datetime import UTC, datetime
 from typing import Dict, List, Literal, cast
 
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.graph import StateGraph
 from langgraph.prebuilt import ToolNode
+from langsmith import Client
+
 
 from react_agent.configuration import Configuration
 from react_agent.state import InputState, State
@@ -84,7 +86,6 @@ async def research_agent(state: State) -> Dict[str, List[AIMessage]]:
 ## Add this new kb and lease document processing agent function
 async def kb_lease_doc_agent(state: State) -> Dict[str, List[AIMessage]]:
     """KB and lease document processing agent using LangSmith prompt."""
-    from langsmith import Client
     
     configuration = Configuration.from_context()
     model = load_chat_model(configuration.model)
