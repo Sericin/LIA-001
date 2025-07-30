@@ -13,7 +13,8 @@ def get_message_text(msg: BaseMessage) -> str:
     elif isinstance(content, dict):
         return content.get("text", "")
     else:
-        txts = [c if isinstance(c, str) else (c.get("text") or "") for c in content]
+        txts = [c if isinstance(c, str) else (
+            c.get("text") or "") for c in content]
         return "".join(txts).strip()
 
 
@@ -23,8 +24,15 @@ def load_chat_model(fully_specified_name: str) -> BaseChatModel:
     Args:
         fully_specified_name (str): String in the format 'provider/model'.
     """
+    if "/" not in fully_specified_name:
+        raise ValueError(
+            f"Invalid model format: '{fully_specified_name}'. "
+            "Expected format: 'provider/model-name' (e.g., 'anthropic/claude-3-5-sonnet-20240620')"
+        )
+
     provider, model = fully_specified_name.split("/", maxsplit=1)
     return init_chat_model(model, model_provider=provider)
+
 
 async def load_langsmith_prompt(prompt_name: str):
     """Load prompt from LangSmith asynchronously."""

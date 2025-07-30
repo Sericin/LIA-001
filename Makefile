@@ -18,6 +18,40 @@ test_profile:
 extended_tests:
 	python -m pytest --only-extended $(TEST_FILE)
 
+######################
+# LANGSMITH MONITORING
+######################
+
+monitor:
+	python monitor_with_langsmith.py
+
+dashboard:
+	python check_langsmith_dashboard.py
+
+test_langsmith:
+	python -m pytest tests/integration_tests/test_graph.py -v
+
+# Comprehensive LangSmith Testing
+evaluate_comprehensive:
+	python langsmith_lease_evaluator.py
+
+ab_test:
+	python langsmith_ab_testing.py
+
+performance_benchmark:
+	python langsmith_performance_benchmark.py
+
+# Combined testing workflow
+test_full_suite: test evaluate_comprehensive performance_benchmark
+	@echo "✅ Complete testing suite finished"
+
+# Comprehensive testing orchestrator
+test_orchestrated:
+	python test_orchestrator.py
+
+# Selective pipeline testing (e.g., make test_selective PIPELINES=unit_tests,integration_tests)
+test_selective:
+	python test_orchestrator.py $(PIPELINES)
 
 ######################
 # LINTING AND FORMATTING
@@ -55,10 +89,26 @@ spell_fix:
 
 help:
 	@echo '----'
-	@echo 'format                       - run code formatters'
-	@echo 'lint                         - run linters'
+	@echo 'TESTING COMMANDS:'
 	@echo 'test                         - run unit tests'
 	@echo 'tests                        - run unit tests'
 	@echo 'test TEST_FILE=<test_file>   - run all tests in file'
 	@echo 'test_watch                   - run unit tests in watch mode'
+	@echo 'test_langsmith               - run LangSmith integration tests'
+	@echo 'test_full_suite              - run complete testing suite'
+	@echo 'test_orchestrated            - run comprehensive testing orchestrator'
+	@echo 'test_selective PIPELINES=... - run selective pipeline testing'
+	@echo '----'
+	@echo 'LANGSMITH EVALUATION:'
+	@echo 'evaluate_comprehensive       - run comprehensive lease analysis evaluation'
+	@echo 'ab_test                      - run A/B testing for configuration optimization'
+	@echo 'performance_benchmark        - run performance benchmarking and monitoring'
+	@echo '----'
+	@echo 'MONITORING:'
+	@echo 'monitor                      - run comprehensive LangSmith monitoring'
+	@echo 'dashboard                    - quick LangSmith dashboard check'
+	@echo '----'
+	@echo 'CODE QUALITY:'
+	@echo 'format                       - run code formatters'
+	@echo 'lint                         - run linters'
 
