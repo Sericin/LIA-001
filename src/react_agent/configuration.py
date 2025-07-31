@@ -148,6 +148,33 @@ class Configuration:
             "description": "Depth level (1-3) for analyzing provision cluster interactions."}
     )
 
+    # Output Formatting Configuration
+    max_flags_in_summary: int = field(
+        default=5,
+        metadata={
+            "description": "Maximum number of flags to show in the summary output."}
+    )
+    max_clusters_in_summary: int = field(
+        default=3,
+        metadata={
+            "description": "Maximum number of provision clusters to show in the summary output."}
+    )
+    max_review_messages_in_summary: int = field(
+        default=5,
+        metadata={
+            "description": "Maximum number of review messages to show in the summary output."}
+    )
+    flag_description_max_length: int = field(
+        default=150,
+        metadata={
+            "description": "Maximum length for flag descriptions in summary (characters)."}
+    )
+    include_detailed_report: bool = field(
+        default=True,
+        metadata={
+            "description": "Include comprehensive detailed report alongside summary."}
+    )
+
     @classmethod
     def from_context(cls, context: Optional[RunnableConfig] = None) -> "Configuration":
         """Create a Configuration instance from the given context.
@@ -226,6 +253,16 @@ class Configuration:
         if not (1 <= self.cluster_interaction_depth <= 3):
             raise ValueError(
                 "cluster_interaction_depth must be between 1 and 3")
+
+        # Validate output formatting settings
+        if self.max_flags_in_summary < 1:
+            raise ValueError("max_flags_in_summary must be at least 1")
+        if self.max_clusters_in_summary < 1:
+            raise ValueError("max_clusters_in_summary must be at least 1")
+        if self.max_review_messages_in_summary < 1:
+            raise ValueError("max_review_messages_in_summary must be at least 1")
+        if self.flag_description_max_length < 50:
+            raise ValueError("flag_description_max_length must be at least 50")
 
         # Validate confidence-related settings
         if not (0.0 <= self.minimum_confidence_for_recommendation <= 100.0):
